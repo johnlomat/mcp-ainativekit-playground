@@ -1,0 +1,22 @@
+{
+  "name": "weather-mcp-server",
+  "version": "1.0.0",
+  "description": "Weather checker MCP server for ChatGPT Apps",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "express": "^5.2.1",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^20.10.0",
+    "@vercel/node": "^5.5.15",
+    "typescript": "^5.3.0"
+  }
+}
