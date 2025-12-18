@@ -1,35 +1,15 @@
 // Shared MCP server factory
-// Used by both local dev server and Vercel serverless
+// Used by both local dev server and serverless
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { fetchWeather } from "./tools/weather.js";
-import { getWeatherWidget } from "./widgets/weather.js";
+import { fetchWeather } from "./tools/weather";
 
 export function createMcpServer(): McpServer {
   const server = new McpServer({
     name: "weather-server",
     version: "1.0.0",
   });
-
-  // Register weather widget resource
-  server.registerResource(
-    "weather-widget",
-    "ui://widget/weather.html",
-    {
-      description: "Weather display widget",
-      mimeType: "text/html+skybridge",
-    },
-    async () => ({
-      contents: [
-        {
-          uri: "ui://widget/weather.html",
-          mimeType: "text/html+skybridge",
-          text: getWeatherWidget(),
-        },
-      ],
-    })
-  );
 
   // Register weather tool
   server.registerTool(
