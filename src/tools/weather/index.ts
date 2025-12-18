@@ -1,5 +1,5 @@
 // Weather tool exports
 
-export * from "./types.js";
-export * from "./services/get-coordinates.js";
-export * from "./services/get-weather.js";
+export * from "./types";
+export * from "./services/get-coordinates";
+export * from "./services/get-weather";

@@ -1,6 +1,6 @@
 // Get coordinates from city name using Open-Meteo Geocoding API
 
-import { GeocodingResult } from "../types.js";
+import { GeocodingResult } from "../types";
 
 export async function getCoordinates(city: string): Promise<GeocodingResult> {
   const response = await fetch(

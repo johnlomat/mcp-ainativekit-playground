@@ -3,7 +3,7 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { fetchWeather } from "./tools/weather/index.js";
+import { fetchWeather } from "./tools/weather";
 
 export function createMcpServer(): McpServer {
   const server = new McpServer({

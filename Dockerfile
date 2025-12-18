@@ -32,7 +32,7 @@ RUN pnpm install --frozen-lockfile --prod=false
 COPY . .
 
 # Build server and widget
-RUN pnpm run build:all
+RUN pnpm run build
 
 # Remove development dependencies
 RUN pnpm prune --prod

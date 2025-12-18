@@ -1,7 +1,7 @@
 // Fetch weather data using Open-Meteo API
 
-import { WeatherData } from "../types.js";
-import { getCoordinates } from "./get-coordinates.js";
+import { WeatherData } from "../types";
+import { getCoordinates } from "./get-coordinates";
 
 export async function fetchWeather(city: string): Promise<WeatherData> {
   const coords = await getCoordinates(city);

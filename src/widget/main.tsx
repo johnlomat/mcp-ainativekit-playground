@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { WeatherWidget } from '../components/WeatherWidget'
+import { WeatherWidget } from '../components/weather-widget'
 
 // Get weather data from ChatGPT's tool output
 const getWeatherData = () => {
