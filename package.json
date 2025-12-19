@@ -1,7 +1,7 @@
 {
-  "name": "weather-mcp-ainativekit",
+  "name": "mcp-ainativekit-playground",
   "version": "1.0.0",
-  "description": "Weather checker MCP server for ChatGPT Apps",
+  "description": "MCP server playground with AINativeKit widgets for ChatGPT Apps",
   "type": "module",
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts && vite build",

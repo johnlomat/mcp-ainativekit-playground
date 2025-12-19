@@ -70,11 +70,11 @@ app.post("/messages", async (req, res) => {
 
 // Health check endpoint
 app.get("/health", (_req, res) => {
-  res.json({ status: "ok", server: "weather-mcp-ainativekit" });
+  res.json({ status: "ok", server: "mcp-ainativekit-playground" });
 });
 
 app.listen(PORT, () => {
-  console.log(`Weather MCP server running on http://localhost:${PORT}`);
+  console.log(`MCP AINativeKit Playground running on http://localhost:${PORT}`);
   console.log(`MCP endpoint (ChatGPT): http://localhost:${PORT}/mcp`);
   console.log(`SSE endpoint (Inspector): http://localhost:${PORT}/sse`);
 });
