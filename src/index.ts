@@ -5,7 +5,12 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
 import { createMcpServer } from "@/server";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -24,6 +29,9 @@ app.use((req, res, next) => {
 
 // JSON parsing for all routes
 app.use(express.json());
+
+// Serve widget static files (from dist/widget when running built server)
+app.use("/widget", express.static(path.join(__dirname, "widget")));
 
 // Store servers and transports by session ID (for SSE)
 const mcpServers = new Map<string, McpServer>();
