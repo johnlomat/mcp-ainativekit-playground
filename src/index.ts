@@ -22,14 +22,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Only use JSON parsing for non-MCP routes
-app.use((req, res, next) => {
-  if (req.path === "/mcp") {
-    next();
-  } else {
-    express.json()(req, res, next);
-  }
-});
+// JSON parsing for all routes
+app.use(express.json());
 
 // Store servers and transports by session ID (for SSE)
 const mcpServers = new Map<string, McpServer>();
@@ -45,7 +39,7 @@ app.all("/mcp", async (req, res) => {
 
   const server = createMcpServer();
   await server.connect(transport);
-  await transport.handleRequest(req, res);
+  await transport.handleRequest(req, res, req.body);
 });
 
 // SSE endpoint for MCP Inspector (GET to establish SSE connection)
