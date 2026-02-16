@@ -20,6 +20,15 @@ const WOOCOMMERCE_URL = process.env.WOOCOMMERCE_URL || "";
 const resourceDomains = [WIDGET_BASE_URL];
 if (WOOCOMMERCE_URL) resourceDomains.push(WOOCOMMERCE_URL);
 
+// Shared widget UI metadata for resource registration and content items
+const widgetUiMeta = {
+  domain: WIDGET_BASE_URL,
+  prefersBorder: true,
+  csp: {
+    resourceDomains,
+  },
+};
+
 // Generate widget HTML with proper AINativeKit setup
 function getWidgetHtml(widgetType: string): string {
   return `<!DOCTYPE html>
@@ -48,22 +57,14 @@ export function createMcpServer(): McpServer {
     server,
     "weather-widget",
     "ui://widget/weather.html",
-    {},
+    { _meta: { ui: widgetUiMeta } },
     async () => ({
       contents: [
         {
           uri: "ui://widget/weather.html",
           mimeType: RESOURCE_MIME_TYPE,
           text: getWidgetHtml("weather"),
-          _meta: {
-            ui: {
-              domain: WIDGET_BASE_URL,
-              prefersBorder: true,
-              csp: {
-                resourceDomains,
-              },
-            },
-          },
+          _meta: { ui: widgetUiMeta },
         },
       ],
     })
@@ -74,22 +75,14 @@ export function createMcpServer(): McpServer {
     server,
     "products-widget",
     "ui://widget/products.html",
-    {},
+    { _meta: { ui: widgetUiMeta } },
     async () => ({
       contents: [
         {
           uri: "ui://widget/products.html",
           mimeType: RESOURCE_MIME_TYPE,
           text: getWidgetHtml("products"),
-          _meta: {
-            ui: {
-              domain: WIDGET_BASE_URL,
-              prefersBorder: true,
-              csp: {
-                resourceDomains,
-              },
-            },
-          },
+          _meta: { ui: widgetUiMeta },
         },
       ],
     })
