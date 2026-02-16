@@ -57,7 +57,7 @@ export function createMcpServer(): McpServer {
     server,
     "weather-widget",
     "ui://widget/weather.html",
-    { _meta: { ui: widgetUiMeta } },
+    {},
     async () => ({
       contents: [
         {
@@ -75,7 +75,7 @@ export function createMcpServer(): McpServer {
     server,
     "products-widget",
     "ui://widget/products.html",
-    { _meta: { ui: widgetUiMeta } },
+    {},
     async () => ({
       contents: [
         {
@@ -98,6 +98,11 @@ export function createMcpServer(): McpServer {
       inputSchema: {
         city: z.string().describe("City name to get weather for (e.g., 'London', 'New York', 'Tokyo')"),
       },
+      annotations: {
+        readOnlyHint: true,
+        openWorldHint: true,
+        destructiveHint: false,
+      },
       _meta: {
         ui: { resourceUri: "ui://widget/weather.html" },
       },
@@ -106,7 +111,7 @@ export function createMcpServer(): McpServer {
       try {
         const weather = await fetchWeather(city);
         return {
-          structuredContent: { type: "object", properties: weather },
+          structuredContent: { ...weather } as Record<string, unknown>,
           content: [
             {
               type: "text" as const,
@@ -138,6 +143,11 @@ export function createMcpServer(): McpServer {
         category: z.string().optional().describe("Category slug to filter products"),
         perPage: z.number().optional().describe("Number of products to return (default: 10)"),
       },
+      annotations: {
+        readOnlyHint: true,
+        openWorldHint: true,
+        destructiveHint: false,
+      },
       _meta: {
         ui: { resourceUri: "ui://widget/products.html" },
       },
@@ -147,7 +157,7 @@ export function createMcpServer(): McpServer {
         const products = await fetchProducts({ search, category, perPage });
         const productList = products.map(formatProductText).join("\n\n");
         return {
-          structuredContent: { type: "array", items: products },
+          structuredContent: { products } as Record<string, unknown>,
           content: [
             {
               type: "text" as const,
@@ -177,6 +187,11 @@ export function createMcpServer(): McpServer {
       inputSchema: {
         id: z.number().describe("The product ID to fetch"),
       },
+      annotations: {
+        readOnlyHint: true,
+        openWorldHint: false,
+        destructiveHint: false,
+      },
       _meta: {
         ui: { resourceUri: "ui://widget/products.html" },
       },
@@ -185,7 +200,7 @@ export function createMcpServer(): McpServer {
       try {
         const product = await fetchProductById(id);
         return {
-          structuredContent: { type: "object", properties: product },
+          structuredContent: { ...product } as Record<string, unknown>,
           content: [
             {
               type: "text" as const,
