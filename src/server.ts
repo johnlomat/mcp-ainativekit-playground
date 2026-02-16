@@ -9,6 +9,28 @@ import { formatProductText } from "@/lib/utils";
 
 // Base URL for widget assets (set via environment or default)
 const WIDGET_BASE_URL = process.env.WIDGET_BASE_URL || "https://mcp.johnquery.com";
+const WOOCOMMERCE_URL = process.env.WOOCOMMERCE_URL || "";
+
+// MCP Apps UI MIME type per spec
+const MCP_APP_MIME = "text/html;profile=mcp-app";
+
+// Widget resource metadata with CSP and domain
+function getWidgetMeta() {
+  const resourceDomains = [WIDGET_BASE_URL];
+  if (WOOCOMMERCE_URL) resourceDomains.push(WOOCOMMERCE_URL);
+
+  return {
+    ui: {
+      domain: WIDGET_BASE_URL,
+      prefersBorder: true,
+      csp: {
+        resourceDomains,
+        connectDomains: [] as string[],
+        frameDomains: [] as string[],
+      },
+    },
+  };
+}
 
 // Generate widget HTML with proper AINativeKit setup
 function getWidgetHtml(widgetType: string): string {
@@ -37,15 +59,16 @@ export function createMcpServer(): McpServer {
   server.registerResource(
     "weather-widget",
     "ui://widget/weather.html",
-    { mimeType: "text/html+skybridge" },
+    { mimeType: MCP_APP_MIME },
     async () => ({
       contents: [
         {
           uri: "ui://widget/weather.html",
-          mimeType: "text/html+skybridge",
+          mimeType: MCP_APP_MIME,
           text: getWidgetHtml("weather"),
         },
       ],
+      _meta: getWidgetMeta(),
     })
   );
 
@@ -53,15 +76,16 @@ export function createMcpServer(): McpServer {
   server.registerResource(
     "products-widget",
     "ui://widget/products.html",
-    { mimeType: "text/html+skybridge" },
+    { mimeType: MCP_APP_MIME },
     async () => ({
       contents: [
         {
           uri: "ui://widget/products.html",
-          mimeType: "text/html+skybridge",
+          mimeType: MCP_APP_MIME,
           text: getWidgetHtml("products"),
         },
       ],
+      _meta: getWidgetMeta(),
     })
   );
 
