@@ -21,7 +21,7 @@ const getWidgetType = (): string => {
 const App: React.FC = () => {
   const widgetType = getWidgetType()
   const toolOutput = useWidgetProps<Record<string, any>>()
-  const hasToolOutput = Object.keys(toolOutput).length > 0
+  const hasToolOutput = toolOutput != null && Object.keys(toolOutput).length > 0
 
   switch (widgetType) {
     case 'products': {
