@@ -16,8 +16,9 @@
   },
   "dependencies": {
     "@ainativekit/ui": "^1.0.0",
-    "@openai/apps-sdk-ui": "^0.2.0",
+    "@modelcontextprotocol/ext-apps": "^1.0.1",
     "@modelcontextprotocol/sdk": "^1.25.1",
+    "@openai/apps-sdk-ui": "^0.2.0",
     "express": "^5.2.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
