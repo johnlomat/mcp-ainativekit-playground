@@ -2,6 +2,11 @@
 // Used by both local dev server and serverless
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import {
+  registerAppResource,
+  registerAppTool,
+  RESOURCE_MIME_TYPE,
+} from "@modelcontextprotocol/ext-apps/server";
 import { z } from "zod";
 import { fetchWeather } from "@/tools/weather";
 import { fetchProducts, fetchProductById } from "@/tools/woocommerce";
@@ -11,26 +16,9 @@ import { formatProductText } from "@/lib/utils";
 const WIDGET_BASE_URL = process.env.WIDGET_BASE_URL || "https://mcp.johnquery.com";
 const WOOCOMMERCE_URL = process.env.WOOCOMMERCE_URL || "";
 
-// MCP Apps UI MIME type per spec
-const MCP_APP_MIME = "text/html;profile=mcp-app";
-
-// Widget resource metadata with CSP and domain
-function getWidgetMeta() {
-  const resourceDomains = [WIDGET_BASE_URL];
-  if (WOOCOMMERCE_URL) resourceDomains.push(WOOCOMMERCE_URL);
-
-  return {
-    ui: {
-      domain: WIDGET_BASE_URL,
-      prefersBorder: true,
-      csp: {
-        resourceDomains,
-        connectDomains: [] as string[],
-        frameDomains: [] as string[],
-      },
-    },
-  };
-}
+// CSP resource domains (widget assets + product images)
+const resourceDomains = [WIDGET_BASE_URL];
+if (WOOCOMMERCE_URL) resourceDomains.push(WOOCOMMERCE_URL);
 
 // Generate widget HTML with proper AINativeKit setup
 function getWidgetHtml(widgetType: string): string {
@@ -56,41 +44,60 @@ export function createMcpServer(): McpServer {
   });
 
   // Register weather widget resource for ChatGPT Apps
-  server.registerResource(
+  registerAppResource(
+    server,
     "weather-widget",
     "ui://widget/weather.html",
-    { mimeType: MCP_APP_MIME },
+    {},
     async () => ({
       contents: [
         {
           uri: "ui://widget/weather.html",
-          mimeType: MCP_APP_MIME,
+          mimeType: RESOURCE_MIME_TYPE,
           text: getWidgetHtml("weather"),
+          _meta: {
+            ui: {
+              domain: WIDGET_BASE_URL,
+              prefersBorder: true,
+              csp: {
+                resourceDomains,
+              },
+            },
+          },
         },
       ],
-      _meta: getWidgetMeta(),
     })
   );
 
   // Register products widget resource for ChatGPT Apps
-  server.registerResource(
+  registerAppResource(
+    server,
     "products-widget",
     "ui://widget/products.html",
-    { mimeType: MCP_APP_MIME },
+    {},
     async () => ({
       contents: [
         {
           uri: "ui://widget/products.html",
-          mimeType: MCP_APP_MIME,
+          mimeType: RESOURCE_MIME_TYPE,
           text: getWidgetHtml("products"),
+          _meta: {
+            ui: {
+              domain: WIDGET_BASE_URL,
+              prefersBorder: true,
+              csp: {
+                resourceDomains,
+              },
+            },
+          },
         },
       ],
-      _meta: getWidgetMeta(),
     })
   );
 
   // Register weather tool
-  server.registerTool(
+  registerAppTool(
+    server,
     "get-weather",
     {
       title: "Get Weather",
@@ -99,9 +106,7 @@ export function createMcpServer(): McpServer {
         city: z.string().describe("City name to get weather for (e.g., 'London', 'New York', 'Tokyo')"),
       },
       _meta: {
-        "openai/outputTemplate": "ui://widget/weather.html",
-        "openai/toolInvocation/invoking": "Checking the weather...",
-        "openai/toolInvocation/invoked": "Weather data ready!",
+        ui: { resourceUri: "ui://widget/weather.html" },
       },
     },
     async ({ city }) => {
@@ -129,7 +134,8 @@ export function createMcpServer(): McpServer {
   );
 
   // Register get-products tool
-  server.registerTool(
+  registerAppTool(
+    server,
     "get-products",
     {
       title: "Get Products",
@@ -140,9 +146,7 @@ export function createMcpServer(): McpServer {
         perPage: z.number().optional().describe("Number of products to return (default: 10)"),
       },
       _meta: {
-        "openai/outputTemplate": "ui://widget/products.html",
-        "openai/toolInvocation/invoking": "Fetching products...",
-        "openai/toolInvocation/invoked": "Products loaded!",
+        ui: { resourceUri: "ui://widget/products.html" },
       },
     },
     async ({ search, category, perPage }) => {
@@ -171,7 +175,8 @@ export function createMcpServer(): McpServer {
   );
 
   // Register get-product-by-id tool
-  server.registerTool(
+  registerAppTool(
+    server,
     "get-product-by-id",
     {
       title: "Get Product by ID",
@@ -180,9 +185,7 @@ export function createMcpServer(): McpServer {
         id: z.number().describe("The product ID to fetch"),
       },
       _meta: {
-        "openai/outputTemplate": "ui://widget/products.html",
-        "openai/toolInvocation/invoking": "Fetching product details...",
-        "openai/toolInvocation/invoked": "Product details loaded!",
+        ui: { resourceUri: "ui://widget/products.html" },
       },
     },
     async ({ id }) => {
