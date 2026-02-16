@@ -11,26 +11,27 @@ const productToCard = (product: Product) => {
 
   const metadata = []
   if (product.average_rating !== '0') {
-    metadata.push({ label: `${product.average_rating} (${product.review_count})` })
+    metadata.push({ label: `${product.average_rating} (${product.review_count})`, separator: '·' })
   }
   if (product.categories[0]) {
     metadata.push({ label: stripHtml(product.categories[0].name) })
   }
 
   return (
-    <SummaryCard
-      key={product.id}
-      images={product.images[0] ? { src: product.images[0].src, alt: product.images[0].alt || product.name } : undefined}
-      title={stripHtml(product.name)}
-      subtitle={subtitle}
-      badge={product.on_sale ? 'Sale' : undefined}
-      badgeColor="success"
-      description={stripHtml(product.short_description).slice(0, 120)}
-      descriptionLines={2}
-      metadata={metadata.length > 0 ? metadata : undefined}
-      imageAspectRatio="4/3"
-      size="compact"
-    />
+    <div key={product.id} style={{ width: '220px', flexShrink: 0 }}>
+      <SummaryCard
+        images={product.images[0] ? { src: product.images[0].src, alt: product.images[0].alt || product.name } : undefined}
+        title={stripHtml(product.name)}
+        subtitle={subtitle}
+        badge={product.on_sale ? 'Sale' : undefined}
+        badgeColor="success"
+        description={stripHtml(product.short_description).slice(0, 120)}
+        descriptionLines={2}
+        metadata={metadata.length > 0 ? metadata : undefined}
+        imageAspectRatio="4/3"
+        size="compact"
+      />
+    </div>
   )
 }
 
