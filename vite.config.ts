@@ -16,10 +16,12 @@ export default defineConfig({
     rollupOptions: {
       input: path.resolve(__dirname, 'src/widget/index.html'),
       output: {
-        // Use stable filenames without content hashes for MCP resource references
+        // Single bundle for inline embedding in MCP resource HTML
         entryFileNames: 'assets/index.js',
-        chunkFileNames: 'assets/[name].js',
         assetFileNames: 'assets/[name].[ext]',
+        // Disable code splitting so everything is in one file
+        manualChunks: undefined,
+        inlineDynamicImports: true,
       },
     }
   }

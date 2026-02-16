@@ -8,6 +8,9 @@ import {
   RESOURCE_MIME_TYPE,
 } from "@modelcontextprotocol/ext-apps/server";
 import { z } from "zod";
+import { readFileSync } from "node:fs";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { fetchWeather } from "@/tools/weather";
 import { fetchProducts, fetchProductById } from "@/tools/woocommerce";
 import { formatProductText } from "@/lib/utils";
@@ -16,7 +19,7 @@ import { formatProductText } from "@/lib/utils";
 const WIDGET_BASE_URL = process.env.WIDGET_BASE_URL || "https://mcp.johnquery.com";
 const WOOCOMMERCE_URL = process.env.WOOCOMMERCE_URL || "";
 
-// CSP resource domains (widget assets + product images)
+// CSP resource domains (product images)
 const resourceDomains = [WIDGET_BASE_URL];
 if (WOOCOMMERCE_URL) resourceDomains.push(WOOCOMMERCE_URL);
 
@@ -29,22 +32,17 @@ const widgetUiMeta = {
   },
 };
 
-// Generate widget HTML with proper AINativeKit setup
+// Read built widget assets at startup for inline embedding
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const WIDGET_CSS = readFileSync(resolve(__dirname, "widget/assets/index.css"), "utf8");
+const WIDGET_JS = readFileSync(resolve(__dirname, "widget/assets/index.js"), "utf8");
+
+// Generate widget HTML with inlined CSS and JS (required by ChatGPT CSP)
 function getWidgetHtml(widgetType: string): string {
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MCP Widget</title>
-  <link rel="stylesheet" href="${WIDGET_BASE_URL}/widget/assets/index.css" />
-</head>
-<body>
-  <div id="root"></div>
-  <script>window.__WIDGET_TYPE__ = "${widgetType}";</script>
-  <script type="module" src="${WIDGET_BASE_URL}/widget/assets/index.js"></script>
-</body>
-</html>`;
+  return `<div id="root"></div>
+<style>${WIDGET_CSS}</style>
+<script>window.__WIDGET_TYPE__ = "${widgetType}";</script>
+<script type="module">${WIDGET_JS}</script>`;
 }
 
 export function createMcpServer(): McpServer {
