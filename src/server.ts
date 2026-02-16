@@ -37,6 +37,7 @@ function getWidgetHtml(widgetType: string): string {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MCP Widget</title>
+  <link rel="stylesheet" href="${WIDGET_BASE_URL}/widget/assets/index.css" />
 </head>
 <body>
   <div id="root"></div>
