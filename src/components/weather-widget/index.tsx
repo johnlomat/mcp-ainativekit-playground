@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Badge, Chip } from '@ainativekit/ui'
+import { Card, Badge } from '@ainativekit/ui'
 import { WeatherWidgetProps } from './types'
 import { getWeatherEmoji, getWeatherDescription } from './utils'
 
@@ -10,9 +10,9 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({ data }) => {
   return (
     <Card elevationLevel={1}>
       <Card.Header>
-        <Card.ChipGroup>
-          <Chip variant="neutral">{emoji} {description}</Chip>
-        </Card.ChipGroup>
+        <Card.BadgeGroup>
+          <Card.Badge>{emoji} {description}</Card.Badge>
+        </Card.BadgeGroup>
       </Card.Header>
       <Card.Body>
         <Card.Title>{data.location || 'Unknown Location'}</Card.Title>
@@ -21,10 +21,10 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({ data }) => {
         </div>
         <Card.Description>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: '12px' }}>
-            <Badge variant="neutral">💧 Humidity: {data.humidity ?? '--'}%</Badge>
-            <Badge variant="neutral">💨 Wind: {data.windSpeed ?? '--'} km/h</Badge>
-            <Badge variant="neutral">🌡️ Feels: {data.feelsLike ?? '--'}°C</Badge>
-            <Badge variant="neutral">☀️ UV: {data.uvIndex ?? '--'}</Badge>
+            <Badge variant="soft">💧 Humidity: {data.humidity ?? '--'}%</Badge>
+            <Badge variant="soft">💨 Wind: {data.windSpeed ?? '--'} km/h</Badge>
+            <Badge variant="soft">🌡️ Feels: {data.feelsLike ?? '--'}°C</Badge>
+            <Badge variant="soft">☀️ UV: {data.uvIndex ?? '--'}</Badge>
           </div>
         </Card.Description>
       </Card.Body>

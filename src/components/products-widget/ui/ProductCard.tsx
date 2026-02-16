@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Badge, Chip } from "@ainativekit/ui";
+import { Card, Badge } from "@ainativekit/ui";
 import { Product } from "../types";
 import { formatPrice, stripHtml } from "@/lib/utils";
 
@@ -15,10 +15,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <Card elevationLevel={1}>
       <Card.Header>
-        <Card.ChipGroup>
-          {product.on_sale && <Chip variant="success">Sale</Chip>}
-          {product.is_in_stock ? <Chip variant="neutral">In Stock</Chip> : <Chip variant="error">Out of Stock</Chip>}
-        </Card.ChipGroup>
+        <Card.BadgeGroup>
+          {product.on_sale && <Card.Badge color="success">Sale</Card.Badge>}
+          {product.is_in_stock ? <Card.Badge>In Stock</Card.Badge> : <Card.Badge color="danger">Out of Stock</Card.Badge>}
+        </Card.BadgeGroup>
       </Card.Header>
       <Card.Body>
         {mainImage && (
@@ -44,12 +44,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </p>
           <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
             {product.average_rating !== "0" && (
-              <Badge variant="neutral">
+              <Badge variant="soft">
                 ⭐ {product.average_rating} ({product.review_count})
               </Badge>
             )}
             {product.categories.slice(0, 2).map((cat) => (
-              <Badge key={cat.name} variant="neutral">
+              <Badge key={cat.name} variant="soft">
                 {cat.name}
               </Badge>
             ))}

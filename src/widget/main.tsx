@@ -1,5 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import '@openai/apps-sdk-ui/css'
+import '@ainativekit/ui/styles'
+import { useWidgetProps } from '@ainativekit/ui'
 import { WeatherWidget } from '@/components/weather-widget'
 import { ProductsWidget } from '@/components/products-widget'
 import { demoData } from './demo-data'
@@ -15,25 +18,23 @@ const getWidgetType = (): string => {
   return params.get('type') || 'weather'
 }
 
-// Get tool output data from ChatGPT
-const getToolOutput = () => {
-  return (window as any).openai?.toolOutput
-}
-
 const App: React.FC = () => {
   const widgetType = getWidgetType()
-  const toolOutput = getToolOutput()
+  const toolOutput = useWidgetProps<Record<string, any>>()
+  const hasToolOutput = Object.keys(toolOutput).length > 0
 
   switch (widgetType) {
     case 'products': {
       // Handle both single product and product list
-      let products = toolOutput?.products || (toolOutput?.id ? [toolOutput] : demoData.products)
+      const products = hasToolOutput
+        ? (toolOutput.products || (toolOutput.id ? [toolOutput] : demoData.products))
+        : demoData.products
       return <ProductsWidget products={products} />
     }
     case 'weather':
     default: {
-      const data = toolOutput || demoData.weather
-      return <WeatherWidget data={data} />
+      const data = hasToolOutput ? toolOutput : demoData.weather
+      return <WeatherWidget data={data as any} />
     }
   }
 }
